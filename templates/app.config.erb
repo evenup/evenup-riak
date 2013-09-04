@@ -1,0 +1,143 @@
+
+[
+ %% Riak Client APIs config
+ {riak_api, [
+            %% {pb_backlog, 64},
+            {pb_ip,   "<%= scope.lookupvar('riak::pb_ip') %>" },
+            {pb_port, <%= scope.lookupvar('riak::pb_port') %> }
+            ]},
+
+ %% Riak Core config
+ {riak_core, [
+              {ring_state_dir, "<%= scope.lookupvar('riak::ring_state_dir') %>"},
+              {ring_creation_size, <%= scope.lookupvar('riak::ring_creation_size') %>},
+              {http, [ {"<%= scope.lookupvar('riak::http_ip') %>", <%= scope.lookupvar('riak::http_port') %> } ]},
+              %{https, [{ "127.0.0.1", 8098 }]},
+              %{ssl, [
+              %       {certfile, "/etc/riak/cert.pem"},
+              %       {keyfile, "/etc/riak/key.pem"}
+              %      ]},
+              {handoff_port, <%= scope.lookupvar('riak::handoff_port') %> },
+              %{handoff_ssl_options, [{certfile, "/tmp/erlserver.pem"}]},
+              {dtrace_support, <%= scope.lookupvar('riak::dtrace_support') %>},
+
+              %% Platform-specific installation paths (substituted by rebar)
+              {platform_bin_dir, "/usr/sbin"},
+              {platform_data_dir, "/var/lib/riak"},
+              {platform_etc_dir, "/etc/riak"},
+              {platform_lib_dir, "/usr/lib64/riak/lib"},
+              {platform_log_dir, "/var/log/riak"}
+             ]},
+
+ %% Riak KV config
+ {riak_kv, [
+            {storage_backend, <%= scope.lookupvar('riak::storage_backend') %>},
+            {multi_backend_default, <<"eleveldb_mult">>},
+            {multi_backend, [
+                            {<<"eleveldb_mult">>, riak_kv_eleveldb_backend, [
+                                  {data_root, "<%= scope.lookupvar('riak::eleveldb_data_root') %>"}
+                            ]},
+                            {<<"bitcask_mult">>,  riak_kv_bitcask_backend, [
+                                  {data_root, "<%= scope.lookupvar('riak::bitcask_data_root') %>"}
+                            ]}
+            ]},
+            {anti_entropy, {<%= scope.lookupvar('riak::anti_entropy') %>, []}},
+            {anti_entropy_build_limit, {<%= scope.lookupvar('riak::anti_entropy_build_limit') %>}},
+            {anti_entropy_expire, <%= scope.lookupvar('riak::anti_entropy_expire') %>},
+            {anti_entropy_concurrency, <%= scope.lookupvar('riak::anti_entropy_concurrency') %>},
+            {anti_entropy_tick, <%= scope.lookupvar('riak::anti_entropy_tick') %>},
+            {anti_entropy_data_dir, "<%= scope.lookupvar('riak::anti_entropy_data_dir') %>"},
+            {anti_entropy_leveldb_opts, [{write_buffer_size, 4194304},
+                                         {max_open_files, 20}]},
+            {mapred_name, "mapred"},
+            {mapred_2i_pipe, true},
+            {map_js_vm_count, 8 },
+            {reduce_js_vm_count, 6 },
+            {hook_js_vm_count, 2 },
+            {js_max_vm_mem, 8},
+            {js_thread_stack, 16},
+            %{js_source_dir, "/tmp/js_source"},
+            {http_url_encoding, on},
+            {vnode_vclocks, true},
+            {listkeys_backpressure, true},
+            {fsm_limit, 50000}
+           ]},
+
+ %% Riak Search Config
+ {riak_search, [
+                {enabled, <%= scope.lookupvar('riak::search_enabled') %>}
+               ]},
+
+ %% Merge Index Config
+ {merge_index, [
+                {data_root, "<%= scope.lookupvar('riak::merge_index_data_root') %>"},
+                {buffer_rollover_size, <%= scope.lookupvar('riak::buffer_rollover_size') %>},
+                {max_compact_segments, <%= scope.lookupvar('riak::max_compact_segments') %>}
+               ]},
+
+ %% Bitcask Config
+ {bitcask, [
+             {io_mode, erlang},
+             {data_root, "<%= scope.lookupvar('riak::bitcask_data_root') %>"}
+           ]},
+
+ %% eLevelDB Config
+ {eleveldb, [
+             {data_root, "/<%= scope.lookupvar('riak::eleveldb_data_root') %>"}
+            ]},
+
+ %% Lager Config
+ {lager, [
+            {handlers, [
+                    {lager_file_backend, [
+                            {"/var/log/riak/error.log", error, 10485760, "", 5},
+                            {"/var/log/riak/console.log", info, 10485760, "", 5}
+                    ]}
+            ] },
+            {crash_log, "/var/log/riak/crash.log"},
+            {crash_log_msg_size, 65536},
+            {crash_log_size, 10485760},
+            {crash_log_date, "$D0"},
+            {crash_log_count, 5},
+            {error_logger_redirect, true}
+        ]},
+
+ %% riak_sysmon config
+ {riak_sysmon, [
+         {process_limit, 30},
+         {port_limit, 2},
+         {gc_ms_limit, 0},
+         {heap_word_limit, 40111000},
+         {busy_port, true},
+         {busy_dist_port, true}
+        ]},
+
+ %% SASL config
+ {sasl, [
+         {sasl_error_logger, false}
+        ]},
+
+ %% riak_control config
+ {riak_control, [
+                {enabled, <%= scope.lookupvar('riak::riak_control_enabled') %>},
+
+                %% Authentication style used for access to the admin
+                %% panel. Valid styles are 'userlist' <TODO>.
+                {auth, userlist},
+
+                %% If auth is set to 'userlist' then this is the
+                %% list of usernames and passwords for access to the
+                %% admin panel.
+                {userlist, [{"user", "pass"}
+                           ]},
+
+                %% The admin panel is broken up into multiple
+                %% components, each of which is enabled or disabled
+                %% by one of these settings.
+                {admin, true}
+                ]},
+{ kernel, [
+            {inet_dist_listen_min, <%= scope.lookupvar('riak::inet_dist_listen_min') %>},
+            {inet_dist_listen_max, <%= scope.lookupvar('riak::inet_dist_listen_max') %>}
+ ]}
+].
