@@ -19,6 +19,46 @@
 #   Boolean. Allow auto upgrading the riak package
 #   Default: false
 #
+# [*backup_script*]
+#   Boolean.  Whether or not the backup script should be installed
+#   Default: false
+#
+# [*backup_tar_cron*]
+#   Boolean.  Should a cron script be installed for the tar backups?
+#   Default: false
+#
+# [*backup_tar_cron_minute*]
+#   Integer.  Minute for tar backup script
+#   Default: 0
+#
+# [*backup_tar_cron_hour*]
+#   Integer.  Hour for tar backup script
+#   Default: 0
+#
+# [*backup_tar_cron_day*]
+#   Integer.  Day for tar backup script
+#   Default: 0
+#
+# [*backup_snap_cron*]
+#   Boolean.  Should a cron script be installed for the snapshot backups?
+#   Default: false
+#
+# [*backup_snap_cron_minute*]
+#   Integer.  Minute for snapshot backup script
+#   Default: 0
+#
+# [*backup_snap_cron_hour*]
+#   Integer.  Hour for snapshot backup script
+#   Default: 0
+#
+# [*backup_snap_cron_day*]
+#   Integer.  Day for snapshot backup script
+#   Default: 0
+#
+# [*backup_snap_keep_days*]
+#   Integer.  Number of backup snapshots to keep.
+#   Default: 10
+#
 # [*cluster_name*]
 #   String.  Name of the riak cluster
 #   Default:  riak
@@ -135,6 +175,17 @@
 class riak (
   $version                  = undef,
   $autoupgrade              = false,
+  # backups
+  $backup_script            = false,
+  $backup_tar_cron          = false,
+  $backup_tar_cron_hour     = 0,
+  $backup_tar_cron_minute   = 0,
+  $backup_tar_cron_day      = 0,
+  $backup_snap_cron         = false,
+  $backup_snap_cron_hour    = 0,
+  $backup_snap_cron_minute  = 0,
+  $backup_snap_cron_day     = 0,
+  $backup_snap_keep_days    = 10,
   $cluster_name             = 'riak',
   # app.config settings
   $pb_ip                    = '0.0.0.0',
