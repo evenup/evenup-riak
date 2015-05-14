@@ -34,22 +34,4 @@ describe 'riak::package', :type => :class do
     end
   end
 
-  context 'backup script' do
-    let(:pre_condition) { ["class riak { $backup_script = true }", "include riak"]}
-
-    it { should contain_file('/usr/local/bin/riak_backup.rb') }
-  end
-
-  context 'tar backup cron' do
-    let(:pre_condition) { ["class riak { $backup_script = true $backup_tar_cron = true }", "include riak"]}
-
-    it { should contain_cron('riak_backup_copy') }
-  end
-
-  context 'snapshot backup cron' do
-    let(:pre_condition) { ["class riak { $backup_script = true $backup_snap_cron = true }", "include riak"]}
-
-    it { should contain_cron('riak_backup_snapshot') }
-  end
-
 end

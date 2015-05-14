@@ -22,8 +22,8 @@ class riak::package {
   }
 
   package {'riak':
-    ensure  => $ensure_real,
-    notify  => Exec['clean_default_riak_configs'],
+    ensure => $ensure_real,
+    notify => Exec['clean_default_riak_configs'],
   }
 
   file { '/etc/init.d/riak':
@@ -43,34 +43,4 @@ class riak::package {
     refreshonly => true,
   }
 
-  if $riak::backup_script == true {
-    include ruby::aws_sdk
-    include ruby::logging
-
-    file { '/usr/local/bin/riak_backup.rb':
-      ensure  => 'file',
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0554',
-      source  => 'puppet:///modules/riak/riak_backup.rb',
-    }
-
-    if $riak::backup_tar_cron == true {
-      cron { 'riak_backup_copy':
-        command => '/usr/local/bin/riak_backup.rb -m copy',
-        hour    => $riak::backup_tar_cron_hour,
-        minute  => $riak::backup_tar_cron_minute,
-        weekday => $riak::backup_tar_cron_day,
-      }
-    }
-
-    if $riak::backup_snap_cron == true {
-      cron { 'riak_backup_snapshot':
-        command => "/usr/local/bin/riak_backup.rb -m snapshot -d ${riak::backup_snap_keep_days}",
-        hour    => $riak::backup_snap_cron_hour,
-        minute  => $riak::backup_snap_cron_minute,
-        weekday => $riak::backup_snap_cron_day,
-      }
-    }
-  }
 }
