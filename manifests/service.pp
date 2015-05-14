@@ -10,8 +10,8 @@
 class riak::service {
 
   service { 'riak':
-    ensure  => 'running',
-    enable  => true,
+    ensure => 'running',
+    enable => true,
   }
 
 }
