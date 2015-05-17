@@ -171,7 +171,6 @@ class riak (
   class { '::riak::package': } ->
   class { '::riak::config': } ->
   class { '::riak::service': } ->
-  class { '::riak::cluster': } ->
   anchor { '::riak::end': }
 
 }
